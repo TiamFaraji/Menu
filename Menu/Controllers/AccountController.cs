@@ -27,7 +27,6 @@ namespace Menu.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Check if email already exists
                 var existingUser = await _userManager.FindByEmailAsync(model.Email);
                 if (existingUser != null)
                 {
@@ -44,7 +43,6 @@ namespace Menu.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                // Add password validation errors
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -64,7 +62,6 @@ namespace Menu.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Check if email exists first
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {

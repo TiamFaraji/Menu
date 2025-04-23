@@ -6,6 +6,8 @@
     Layout = "_CategoryLayout";
 }
 
+<h2>Our Menu</h2>
+
 <body>
     @if (!Model.Any())
     {
@@ -28,7 +30,6 @@
                         <p class="item-description">@item.Description</p>
                     </div>
                     <a class="detail" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    @* <a onclick="AddToCart" class="credit">Add to cart</a> *@
                 </div>
             }
         </div>

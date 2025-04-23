@@ -1,19 +1,29 @@
 ﻿@using DataAccess.Models
 @model List<CartItems>
+@using System.Security.Claims
+@inject IHttpContextAccessor _httpContextAccessor
 
 @{
     ViewData["Title"] = "Cart";
+    var userId = Convert.ToInt32(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier));
 }
 
 <div class="coffee-cart-page">
     <div class="coffee-cart-container">
         <h2 class="coffee-cart-title">Your Cart</h2>
 
-        @if (!Model.Any())
+        @if (userId == 0)
         {
-            <div class="coffee-empty-cart-message">
-                <p>There are no products in your shopping cart.</p>
-                <a href="/Categories" class="coffee-back-to-shop">Continue Shopping</a>
+            <div class="empty-cart-message">
+                <p>Please log in to view your shopping cart.</p>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Login</a>
+            </div>
+        }
+        else if (!Model.Any())
+        {
+            <div class="empty-cart-message">
+                <p>Your shopping cart is empty.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
             </div>
         }
         else

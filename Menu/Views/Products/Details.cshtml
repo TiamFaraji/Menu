@@ -5,7 +5,7 @@
 
 <body class="product-detail-page">
     <input type="hidden" id="productId" value="@Model.Id" />
-    <input type="hidden" id="unitPrice" value="@Model.Price" /> <!-- Store price as hidden field -->
+    <input type="hidden" id="unitPrice" value="@Model.Price" /> 
     <div class="product-container">
         @if (Model != null)
         {
@@ -57,7 +57,6 @@
     @section Scripts
     {
         <script>
-            // Make function available globally
             window.AddToCart = function(){
                 var productId = document.getElementById("productId").value;
                 var qty = document.getElementById("CountInput").value;
@@ -97,7 +96,7 @@
             function updateTotalPrice() {
                 const quantity = parseInt(document.getElementById('CountInput').value) || 1;
                 const unitPrice = parseFloat(document.getElementById('unitPrice').value);
-                const totalPrice = Math.round(unitPrice * quantity); // Round to nearest integer
+                const totalPrice = Math.round(unitPrice * quantity);
                 document.getElementById('totalPrice').textContent = totalPrice;
             }
 

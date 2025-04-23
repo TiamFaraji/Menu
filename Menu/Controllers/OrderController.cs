@@ -90,7 +90,6 @@ namespace Menu.Controllers
         public async Task<IActionResult> Cart()
         {
             var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (userId == 0) return Unauthorized();
 
             var cartItems = await _orderService.GetActiveCartItems(userId);
 
