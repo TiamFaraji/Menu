@@ -1,0 +1,23 @@
+﻿@model IEnumerable<DataAccess.Models.Category>
+
+@{
+    ViewData["Title"] = "Product Categories";
+    // Layout = "_AdminLayout";
+}
+
+<h1>Categories</h1>
+
+<div class="products-ca">
+    @foreach (var category in Model)
+    {
+        <div class="categories-look">
+            <a asp-controller="Products"
+               asp-action="GetByCategory"
+               asp-route-categoryid="@category.Id"
+               class="category-link">
+                <img src="api/File/GetFile?filename=@category.Img" class="category-icon" alt="@category.Title" />
+                <p class="category-name">@category.Title</p>
+            </a>
+        </div>
+    }
+</div>

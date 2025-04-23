@@ -1,0 +1,143 @@
+﻿@using DataAccess.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> _signinmanager;
+
+@{
+    var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["Action"]?.ToString();
+    var currentCategory = ViewBag.Category;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @currentCategory</title>
+    <link rel="stylesheet" href="~/css/products.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body class="with-navbar">
+    <nav class="category-navbar">
+        <input type="checkbox" id="mobile-menu-checkbox" style="display: none;">
+
+        <label for="mobile-menu-checkbox" class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+
+        <a href="" class="admin-nav-logo">@currentCategory</a>
+
+        <div class="category-links">
+            @if (ViewBag.OtherCategories != null && ViewBag.OtherCategories.Count > 0)
+            {
+                foreach (var cat in ViewBag.OtherCategories)
+                {
+                    <a asp-controller="Products"
+                       asp-action="GetByCategory"
+                       asp-route-categoryid="@cat.Id"
+                       class="admin-nav-link @(cat.Title == currentCategory ? "current-category" : "")">
+                        @cat.Title
+                    </a>
+                }
+            }
+            <a asp-controller="Categories" asp-action="Index" class="admin-nav-link">All Categories</a>
+            @if (_signinmanager.IsSignedIn(User))
+            {
+                <a asp-controller="Order" asp-action="OrderPage" class="admin-nav-link">Registered Orders</a>
+                <a asp-controller="Account" asp-action="Logout" class="admin-nav-link">Logout</a>
+            }
+
+            else{
+            <a asp-controller="Account" asp-action="Login" class="admin-nav-link">Login/Register</a>
+            }
+            <a asp-controller="Order" asp-action="Cart" class="admin-nav-link">Shopping Cart</a>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="categorySearch" placeholder="Search..." class="search-input">
+            <button type="button" class="search-button">Search</button>
+        </div>
+    </nav>
+
+    <div class="products-container">
+        @RenderBody()
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded and parsed');
+
+            document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+                this.classList.toggle('expanded');
+                document.querySelector('.category-links')?.classList.toggle('expanded');
+            });
+
+            const searchButton = document.querySelector('.search-button');
+            const searchInput = document.getElementById('categorySearch');
+            const productsContainer = document.querySelector('.products-container');
+
+            console.log('Search elements:', { searchButton, searchInput, productsContainer });
+
+            if (!searchButton || !searchInput || !productsContainer) {
+                console.error('One or more search elements are missing!');
+                return;
+            }
+
+            function performSearch() {
+                console.log('Search initiated');
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const products = document.querySelectorAll('.main');
+
+                console.log(`Searching for: "${searchTerm}" in ${products.length} products`);
+
+                if (products.length === 0) {
+                    console.warn('No products found with class "main"');
+                    return;
+                }
+
+                let hasMatches = false;
+                let noResultsMessage = document.querySelector('.no-results');
+
+                if (noResultsMessage) {
+                    noResultsMessage.remove();
+                }
+
+                products.forEach(product => {
+                    const nameElement = product.querySelector('.item-name');
+                    if (nameElement) {
+                        const productName = nameElement.textContent.toLowerCase();
+                        const isMatch = productName.includes(searchTerm);
+                        console.log(`Product "${productName}" - match: ${isMatch}`);
+
+                        product.style.display = isMatch ? '' : 'none';
+                        if (isMatch) hasMatches = true;
+                    }
+                });
+
+                if (!hasMatches && searchTerm.length > 0) {
+                    console.log('No matches found');
+                    const noResults = document.createElement('div');
+                    noResults.className = 'no-results';
+                    noResults.textContent = `No products found matching "${searchTerm}"`;
+                    productsContainer.appendChild(noResults);
+                }
+            }
+
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            console.log('Search event listeners attached');
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

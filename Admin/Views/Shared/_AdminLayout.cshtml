@@ -1,0 +1,75 @@
+﻿@using DataAccess.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> _signinmanager;
+
+@{
+    var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["Action"]?.ToString();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @ViewBag.Category</title>
+    <link rel="stylesheet" href="~/css/products.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+</head>
+<body class="with-navbar">
+    <nav class="category-navbar">
+        <input type="checkbox" id="mobile-menu-checkbox" style="display: none;">
+
+        <a href="/" class="admin-nav-logo">@ViewBag.Category</a>
+
+        <label for="mobile-menu-checkbox" class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+
+        <div class="category-links">
+            <a asp-controller="Categories" asp-action="Index" class="admin-nav-link">All Categories</a>
+            @if (ViewBag.AllCategories != null)
+            {
+                foreach (var cat in ViewBag.AllCategories)
+                {
+                    <a asp-controller="Products"
+                       asp-action="GetByCategory"
+                       asp-route-category="@cat.Id"
+                       class="admin-nav-link">
+                        @cat.Title
+                    </a>
+                }
+            }
+            <a asp-controller="Products" asp-action="Create" class="admin-nav-link">Add Product</a>
+            <a asp-controller="Categories" asp-action="Create" class="admin-nav-link">Add Category</a>
+            <a asp-controller="Orders" asp-action="Index" class="admin-nav-link">Orders</a>
+            @if (_signinmanager.IsSignedIn(User))
+            {
+                <a asp-controller="Account" asp-action="Logout" class="admin-nav-link">Logout</a>
+            }
+
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="admin-nav-link">Login/Register</a>
+            }
+        </div>
+    </nav>
+
+    <div class="products-container">
+        @RenderBody()
+    </div>
+
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            this.classList.toggle('expanded');
+            document.querySelector('.category-links').classList.toggle('expanded');
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

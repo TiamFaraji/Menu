@@ -1,0 +1,38 @@
+﻿@model Core.CategoryService.CategoryDto
+
+@{
+    ViewData["Title"] = "AddCategory";
+    Layout = "_AdminLayout";
+}
+
+<h1>AddCategory</h1>
+<head>
+    <link rel="stylesheet" href="~/css/products.css">
+</head>
+<body>
+    <div class="form">
+        <form asp-controller="Categories" asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="formobj">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" placeholder="Category Name" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Img" class="control-label">Category Image</label>
+                    <input asp-for="Img" type="file" class="form-control" />
+                    <span asp-validation-for="Img" class="text-danger"></span>
+                </div>
+
+                <button type="submit">Create Category</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

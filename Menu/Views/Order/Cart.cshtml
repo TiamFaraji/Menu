@@ -1,0 +1,157 @@
+﻿@using DataAccess.Models
+@model List<CartItems>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="coffee-cart-page">
+    <div class="coffee-cart-container">
+        <h2 class="coffee-cart-title">Your Cart</h2>
+
+        @if (!Model.Any())
+        {
+            <div class="coffee-empty-cart-message">
+                <p>There are no products in your shopping cart.</p>
+                <a href="/Categories" class="coffee-back-to-shop">Continue Shopping</a>
+            </div>
+        }
+        else
+        {
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="validation-error">
+                    <p style="color: red;">@TempData["ErrorMessage"]</p>
+                </div>
+            }
+            <table class="coffee-cart-table">
+                <thead class="coffee-cart-header">
+                    <tr>
+                        <th class="coffee-item-title-header">Title</th>
+                        <th class="coffee-item-qty-header">Quantity</th>
+                        <th class="coffee-item-price-header">Price</th>
+                        <th class="coffee-item-price-header"> </th>
+                    </tr>
+                </thead>
+                <tbody class="coffee-cart-items">
+                    @foreach (var item in Model)
+                    {
+                        <tr id="cart_@item.Id" class="coffee-cart-item">
+                            <td class="coffee-item-details">
+                                <div class="coffee-item-image">
+                                    @if (!string.IsNullOrEmpty(item.product.Img))
+                                    {
+                                        <img class="coffee-product-image" src="/api/File/GetFile?filename=@item.product.Img" alt="@item.product.Title" />
+                                    }
+                                </div>
+                                <span class="coffee-item-name">@item.product.Title</span>
+                            </td>
+                            <td class="coffee-item-qty">@item.Qty</td>
+                            <td class="coffee-C-price">@item.Price.ToString("0.00")</td>
+                            <td onclick="Remove(@item.Id)" class="trash"><i style="color:firebrick; cursor:pointer;" class="fa fa-trash"></i></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+             
+            <form asp-action="Pay" method="post">
+            <div class="coffee-checkout-section">
+                <div class="coffee-user-info">
+                    <h3 class="coffee-info-title">User Information</h3>
+                    <textarea name="Address" class="coffee-address-input" rows="5" typeof="text" placeholder="Address"></textarea>
+                    <input name="Phone" class="coffee-phone-input" type="text" placeholder="Phone Number" />
+                </div>
+                <div id="totalPrice" class="coffee-total-price">
+                    Total Price: @Model.Sum(i => i.Price * i.Qty).ToString("C")
+                </div>
+                <button type="submit" class="coffee-checkout-btn">Purchase</button>
+            </div>
+            </form>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function Remove(id) {
+            const data = { Id: id };
+
+            fetch('/Order/RemoveItem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const row = document.getElementById(`cart_${id}`);
+                if (row) {
+                    row.remove();
+                    updateTotalPrice();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+
+        function updateTotalPrice() {
+            const rows = document.querySelectorAll(".coffee-cart-item");
+            let total = 0;
+
+            rows.forEach(row => {
+                const price = parseFloat(row.querySelector(".coffee-C-price").textContent);
+                const qty = parseInt(row.querySelector(".coffee-item-qty").textContent);
+                total += price * qty;
+            });
+
+            const totalElement = document.getElementById("totalPrice");
+            if (totalElement) {
+                totalElement.textContent = `Total Price: $${total.toFixed(2)}`;
+            }
+
+            
+            if (rows.length === 0) {
+                const cartContainer = document.querySelector(".coffee-cart-container");
+
+              
+                document.querySelector(".coffee-cart-table").style.display = "none";
+                document.querySelector(".coffee-checkout-section").style.display = "none";
+
+               
+                const emptyMessage = document.createElement("div");
+                emptyMessage.className = "coffee-empty-cart-message";
+                emptyMessage.innerHTML = `
+                    <p>There are no products in your shopping cart.</p>
+                    <a href="/Categories" class="coffee-back-to-shop">Continue Shopping</a>
+                `;
+
+                cartContainer.appendChild(emptyMessage);
+            }
+        }   
+     
+
+        document.querySelector("form").addEventListener("submit", function(e) {
+            const address = document.querySelector(".coffee-address-input").value.trim();
+            const phone = document.querySelector(".coffee-phone-input").value.trim();
+            
+            if (!address || !phone) {
+                e.preventDefault();
+                
+                
+                const errorDiv = document.createElement("div");
+                errorDiv.className = "validation-error";
+                errorDiv.innerHTML = `
+                    <p style="color: red;">Please fill in both Address and Phone Number!</p>
+                `;
+                
+                
+                const existingError = document.querySelector(".validation-error");
+                if (existingError) existingError.remove();
+                
+                
+                document.querySelector(".coffee-checkout-section").prepend(errorDiv);
+            }
+        });
+    
+    </script>
+}
+

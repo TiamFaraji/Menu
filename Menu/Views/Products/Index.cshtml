@@ -1,0 +1,34 @@
+﻿@model IEnumerable<DataAccess.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+    Layout = "_CategoryLayout";
+}
+
+<body>
+    @if (!Model.Any())
+    {
+        <p>there is no product</p>
+    }
+    else
+    {
+        <div class="menu-container">
+            @foreach (var item in Model)
+            {
+                <div class="main">
+
+                    @if (!string.IsNullOrEmpty(item.Img))
+                    {
+                        <img src="/api/File/GetFile?filename=@item.Img" alt="@item.Title" />
+                    }
+                    <div class="des">
+                        <span class="item-name">@item.Title</span>
+                        <span class="item-price">@item.Price</span>
+                        <p class="item-description">@item.Description</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+</body>

@@ -1,0 +1,61 @@
+﻿@using DataAccess.Models
+@model List<Cart>
+@{
+    ViewData["Title"] = "OrderPage";
+}
+
+
+
+<div class="order-page">
+    <h2>My Orders</h2>
+
+    @if (Model.Count == 0)
+    {
+        <div class="no-orders">
+            <p>You haven't placed any orders yet.</p>
+            <a href="/Categories" class="shop-link">Start Shopping</a>
+        </div>
+    }
+    else
+    {
+        <div class="order-container">
+            @foreach (var item in Model)
+            {
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">Order #@item.Id</span>
+                        @if (item.Status == DataAccess.Enums.Status.Accepted)
+                        {
+                            <span class="status" data-status="Accepted">Delivered</span>
+                        }
+                        else if (item.Status == DataAccess.Enums.Status.Rejected)
+                        {
+                            <span class="status" data-status="Rejected">Rejected</span>
+                        }
+                        else if (item.Status == DataAccess.Enums.Status.Final)
+                        {
+                            <span class="status" data-status="Final">Awaiting confirmation</span>
+                        }
+                    </div>
+                    <div class="order-date">@item.Payed.ToString("MMMM dd, yyyy")</div>
+                    <div class="order-details">
+                        <div>Address: @item.Address</div>
+                        <div>Phone Number: @item.Phone</div>
+                    </div>
+                    <div class="order-items">
+                        @foreach (var productGroup in item.CartItems.GroupBy(p => p.product.Id))
+                        {
+                            var product = productGroup.First();
+                            var totalQty = productGroup.Sum(p => p.Qty);
+                            <div class="order-item">
+                                <span>@product.product.Title × @totalQty</span>
+                                <span>@((totalQty * product.Price).ToString("C"))</span>
+                            </div>
+                        }
+                    </div>
+                    <div class="total">Total: @item.CartItems.Select(a => a.Price * a.Qty).Sum().ToString("C")</div>
+                </div>
+            }
+        </div>
+    }
+</div>

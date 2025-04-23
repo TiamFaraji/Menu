@@ -1,0 +1,168 @@
+﻿@model AdminOrderDto
+
+@{
+    ViewData["Title"] = "Order Review";
+}
+
+<div class="order-edit-page">
+    <h1 class="page-title">Order Review</h1>
+
+    <div class="confirmation-message">
+        <h3>Confirm order status change</h3>
+    </div>
+
+    <div class="order-details-container">
+        <div class="order-detail-card">
+            <div class="detail-grid">
+                <div class="detail-label">User</div>
+                <div class="detail-value">@Model.UserName</div>
+
+                <div class="detail-label">Address</div>
+                <div class="detail-value">@Model.Address</div>
+
+                <div class="detail-label">Phone Number</div>
+                <div class="detail-value">@Model.Phone</div>
+
+                <div class="detail-label">Products</div>
+                <div class="detail-value">@String.Join(", ", Model.Items.Select(i => $"{i.ProductName} (x{i.Quantity})"))</div>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="handleStatusChange(true, @Model.Id)" class="accept-btn">Accept Order</button>
+                <button onclick="handleStatusChange(false, @Model.Id)" class="reject-btn">Reject Order</button>
+                <a asp-controller="Orders" asp-action="Index" class="back-link">Back to Orders</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        async function handleStatusChange(state, orderId) {
+            // Create the properly formatted DTO
+            const data = {
+                Id: parseInt(orderId),
+                State: Boolean(state)
+            };
+
+            console.log("Sending status update:", data);
+
+            try {
+                const response = await fetch('/Orders/SetStatusCT', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to update status');
+                }
+
+                const result = await response.json();
+                console.log("Update successful:", result);
+
+                await Swal.fire({
+                    title: state ? "Order Accepted" : "Order Rejected",
+                    text: `Order #${orderId} has been ${state ? "accepted" : "rejected"} successfully`,
+                    icon: state ? "success" : "error",
+                    confirmButtonText: 'OK'
+                });
+
+                // Refresh the page to show updated status
+                window.location.reload();
+
+            } catch (error) {
+                console.error("Update failed:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: error.message || "An error occurred while updating the order status",
+                    icon: "error",
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+
+        // Debug function to test the DTO structure
+        function testDtoStructure() {
+            const testData = {
+                Id: 999,
+                State: true
+            };
+            console.log("Test DTO structure:", testData);
+            console.assert(testData.Id === 999, "ID should be a number");
+            console.assert(typeof testData.State === "boolean", "State should be boolean");
+        }
+        testDtoStructure();
+    </script>
+
+    <style>
+        .order-edit-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .order-detail-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .accept-btn, .reject-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .accept-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .reject-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .back-link {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
+}

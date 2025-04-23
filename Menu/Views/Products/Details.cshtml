@@ -1,0 +1,115 @@
+﻿@model DataAccess.Models.Product
+@{
+    ViewData["Title"] = Model?.Title ?? "Product Details";
+}
+
+<body class="product-detail-page">
+    <input type="hidden" id="productId" value="@Model.Id" />
+    <input type="hidden" id="unitPrice" value="@Model.Price" /> <!-- Store price as hidden field -->
+    <div class="product-container">
+        @if (Model != null)
+        {
+            <div class="product-image-wrapper">
+                @if (!string.IsNullOrEmpty(Model.Img))
+                {
+                    <img src="/api/File/GetFile?filename=@Model.Img" alt="@Model.Title" class="product-image" />
+                }
+            </div>
+
+            <div class="product-details">
+                <h1 class="product-title">@Model.Title</h1>
+
+                <div class="price-section">
+                    <span class="total-price">Price: <span id="totalPrice">@Model.Price</span></span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Combinations))
+                {
+                    <div class="variants">
+                        <h3>Ingredients:</h3>
+                        <p>@Model.Combinations</p>
+                    </div>
+                }
+
+                <div class="description">
+                    <h3>About this product:</h3>
+                    <p>@Model.Description</p>
+                </div>
+
+                <div class="quantity-selector">
+                    <label for="CountInput">Quantity:</label>
+                    <input id="CountInput" type="number" min="1" value="1" class="quantity-input" />
+                </div>
+
+                <a class="add-to-cart" onclick="AddToCart()">
+                    Add to Cart
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="not-found">
+                <p>Product not found</p>
+            </div>
+        }
+    </div>
+
+    @section Scripts
+    {
+        <script>
+            // Make function available globally
+            window.AddToCart = function(){
+                var productId = document.getElementById("productId").value;
+                var qty = document.getElementById("CountInput").value;
+
+                var data = {
+                    productId : productId,
+                    qty : qty
+                };
+
+                fetch('/Order/AddToCart', {
+                    method : 'POST',
+                    headers : {
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success', data);
+                    if(data.res == false){
+                        Swal.fire("Youre Not Logged in");
+                    }
+                    else{
+                        Swal.fire({
+                        title: "",
+                        text: "Added To Cart",
+                        icon: "success"
+                    });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Error adding to cart');
+                });
+            }
+
+            function updateTotalPrice() {
+                const quantity = parseInt(document.getElementById('CountInput').value) || 1;
+                const unitPrice = parseFloat(document.getElementById('unitPrice').value);
+                const totalPrice = Math.round(unitPrice * quantity); // Round to nearest integer
+                document.getElementById('totalPrice').textContent = totalPrice;
+            }
+
+            
+            document.addEventListener('DOMContentLoaded', function() {
+                
+                document.getElementById('CountInput').addEventListener('change', updateTotalPrice);
+                document.getElementById('CountInput').addEventListener('input', updateTotalPrice);
+
+            
+                updateTotalPrice();
+            });
+        </script>
+    }
+</body>

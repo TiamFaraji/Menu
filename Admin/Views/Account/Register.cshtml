@@ -1,0 +1,29 @@
+﻿@model RegisterDto
+@{
+    ViewData["Title"] = "Register";
+}
+
+<body>
+    <div class="form">
+        <form asp-action="Register" class="formobj" method="post">
+            <h2>Register</h2>
+
+            <div class="formobj">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" id="email" type="email" name="email" required />
+                <span asp-validation-for="Email"></span>
+
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" id="password" type="password" name="password" required />
+                <span asp-validation-for="Password"></span>
+
+                <label asp-for="PasswordConfirmation">Confirm Password</label>
+                <input asp-for="PasswordConfirmation" type="password" id="PasswordConfirmation" name="PasswordConfirmation" required />
+                <span asp-validation-for="PasswordConfirmation"></span>
+            </div>
+
+            <button type="submit">Register</button>
+            <p>Already have an account? <a asp-controller="Account" asp-action="Login">Login</a></p>
+        </form>
+    </div>
+</body>
