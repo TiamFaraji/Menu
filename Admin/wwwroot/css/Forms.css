@@ -1,0 +1,65 @@
+﻿.form {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(74, 60, 42, 0.05);
+    border: 1px solid #E8DECD;
+}
+
+.formobj {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+    .formobj label {
+        font-weight: 600;
+        color: #5C3A21;
+        margin-bottom: -0.8rem;
+    }
+
+    .formobj input,
+    .formobj select {
+        padding: 0.8rem 1rem;
+        border: 1px solid #E8DECD;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        background: #F9F6F0;
+        transition: all 0.3s ease;
+    }
+
+        .formobj input:focus,
+        .formobj select:focus {
+            outline: none;
+            border-color: #D4A76A;
+            box-shadow: 0 0 0 3px rgba(214, 167, 106, 0.2);
+        }
+
+        .formobj input[type="file"] {
+            padding: 0.5rem;
+            background: transparent;
+            border: 1px dashed #E8DECD;
+        }
+
+    .formobj button {
+        padding: 1rem;
+        background: linear-gradient(to right, #C69C6D, #D4A76A);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+
+        .formobj button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(198, 156, 109, 0.3);
+        }
+
+
