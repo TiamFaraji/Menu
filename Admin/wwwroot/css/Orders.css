@@ -87,7 +87,7 @@
         transform: translateY(-2px);
     }
 
-/* Empty State & Confirmation */
+
 .admin-empty-state, .confirmation-message {
     text-align: center;
     padding: var(--space-lg);
@@ -357,4 +357,24 @@
     .order-status {
         margin-top: 0.25rem;
     }
+}
+
+.order-items {
+    margin: 15px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.order-total {
+    font-weight: bold;
+    text-align: right;
+    margin-top: 10px;
+    font-size: 1.1em;
 }
