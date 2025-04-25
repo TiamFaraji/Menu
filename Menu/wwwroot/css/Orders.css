@@ -16,6 +16,9 @@
 
 .order-page {
     max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    min-height: 100vh;
 }
 
     .coffee-cart-title, .order-page h2 {
@@ -223,6 +226,7 @@
 .order-container {
     display: grid;
     gap: 2rem;
+    justify-items: center;
 }
 
 .order-card {
@@ -232,6 +236,8 @@
     box-shadow: 0 3px 15px rgba(92, 58, 33, 0.08);
     border: 1px solid rgba(212, 167, 106, 0.4);
     transition: all 0.3s ease;
+    width: 100%;
+    max-width: 800px;
 }
 
     .order-card:hover {
@@ -339,3 +345,98 @@
         align-self: flex-end;
     }
 }
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.detail-button {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    background: var(--espresso-brown);
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .detail-button:hover {
+        background: var(--caramel-sauce);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+
+.empty-cart-message {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(92, 58, 33, 0.08);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+    .empty-cart-message p {
+        color: var(--espresso-brown);
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+
+.trash-btn {
+    background: none;
+    border: none;
+    color: firebrick;
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+    .trash-btn:hover {
+        color: darkred;
+    }
+
+
+.validation-error {
+    background: #ffeeee;
+    border-left: 4px solid #ff0000;
+    padding: 10px;
+    margin-bottom: 1rem;
+}
+
+
+.coffee-address-input:invalid,
+.coffee-phone-input:invalid {
+    border-color: #ff9999;
+}
+
+
+.coffee-cart-page {
+    background-color: #F9F6F0;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.coffee-cart-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(92, 58, 33, 0.08);
+}
+
+.coffee-cart-title {
+    color: #5C3A21;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+

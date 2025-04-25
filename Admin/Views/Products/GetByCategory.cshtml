@@ -6,32 +6,46 @@
     Layout = "_CategoryLayout";
 }
 
-<body>
-@if (!Model.Any())
-{
-    <p>there is no product in this category</p>
-}
-else
-{
-        <div class="menu-container">
+<div class="admin-products-page">
+    <h1 class="page-title">@categoryName - Admin Panel</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <p class="empty-message">No products found in this category</p>
+            <a asp-controller="Products" asp-action="Create" class="add-product-btn">Add New Product</a>
+        </div>
+    }
+    else
+    {
+        <div class="products-grid">
             @foreach (var item in Model)
             {
-                <div class="main">
-                    
+                <div class="product-card">
                     @if (!string.IsNullOrEmpty(item.Img))
                     {
-                        <img src="api/File/GetFile?filename=@item.Img" alt="@item.Title" />
+                        <div class="product-image">
+                            <img src="/api/File/GetFile?filename=@item.Img" alt="@item.Title" loading="lazy" />
+                        </div>
                     }
-                    <div class="des">
-                        <span class="item-name">@item.Title</span>
-                        <span class="item-price">@item.Price</span>
-                        <p class="item-description">@item.Description</p>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h3 class="product-title">@item.Title</h3>
+                            <span class="product-price">@item.Price.ToString("C")</span>
+                        </div>
+                        <p class="product-description">@item.Description</p>
+
+                        <div class="product-actions">
+                            <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id" class="edit-btn">
+                                Edit
+                            </a>
+                            <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id" class="delete-btn">
+                                Delete
+                            </a>
+                        </div>
                     </div>
-                    <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id" class="deletebtn">Delete</a>
-                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id" class="credit">Edit</a>
                 </div>
             }
         </div>
-}
-
-</body>
+    }
+</div>

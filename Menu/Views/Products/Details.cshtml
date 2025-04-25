@@ -3,9 +3,9 @@
     ViewData["Title"] = Model?.Title ?? "Product Details";
 }
 
-<body class="product-detail-page">
+<div class="product-detail-page">
     <input type="hidden" id="productId" value="@Model.Id" />
-    <input type="hidden" id="unitPrice" value="@Model.Price" /> 
+    <input type="hidden" id="unitPrice" value="@Model.Price" />
     <div class="product-container">
         @if (Model != null)
         {
@@ -20,7 +20,7 @@
                 <h1 class="product-title">@Model.Title</h1>
 
                 <div class="price-section">
-                    <span class="total-price">Price: <span id="totalPrice">@Model.Price</span></span>
+                    <span class="price">@Model.Price.ToString("C")</span>
                 </div>
 
                 @if (!string.IsNullOrEmpty(Model.Combinations))
@@ -34,6 +34,11 @@
                 <div class="description">
                     <h3>About this product:</h3>
                     <p>@Model.Description</p>
+                </div>
+
+                <div class="description">
+                    <h3>Ingridient:</h3>
+                    <p>@Model.Combinations</p>
                 </div>
 
                 <div class="quantity-selector">
@@ -53,6 +58,7 @@
             </div>
         }
     </div>
+</div>
 
     @section Scripts
     {
@@ -111,4 +117,4 @@
             });
         </script>
     }
-</body>
+

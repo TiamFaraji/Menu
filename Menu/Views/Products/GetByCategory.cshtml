@@ -6,33 +6,40 @@
     Layout = "_CategoryLayout";
 }
 
-<h2>Our Menu</h2>
+<div class="menu-page">
+    <h1 class="menu-title">@categoryName</h1>
 
-<body>
     @if (!Model.Any())
     {
-        <p>there is no product in this category</p>
+        <div class="empty-message">
+            <p>No products available in this category yet</p>
+            <a href="/" class="browse-link">Browse other categories</a>
+        </div>
     }
     else
     {
-        <div class="menu-container">
+        <div class="menu-grid">
             @foreach (var item in Model)
             {
-                <div class="main">
-
+                <div class="menu-card">
                     @if (!string.IsNullOrEmpty(item.Img))
                     {
-                        <img src="/api/File/GetFile?filename=@item.Img" alt="@item.Title" />
+                        <div class="card-image">
+                            <img src="/api/File/GetFile?filename=@item.Img" alt="@item.Title" loading="lazy" />
+                        </div>
                     }
-                    <div class="des">
-                        <span class="item-name">@item.Title</span>
-                        <span class="item-price">@item.Price</span>
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h3 class="item-title">@item.Title</h3>
+                            <span class="item-price">@item.Price.ToString("C")</span>
+                        </div>
                         <p class="item-description">@item.Description</p>
+                        <a class="detail-button" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
+                            View Details
+                        </a>
                     </div>
-                    <a class="detail" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Details</a>
                 </div>
             }
         </div>
     }
-
-</body>
+</div>
